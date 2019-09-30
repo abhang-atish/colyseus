@@ -40,10 +40,10 @@
     "debug": "^4.0.1",
     "fast-json-patch": "^2.0.5",
     "fossil-delta": "^1.0.1",
+    "internal-ip": "^4.3.0",
     "nanoid": "^2.0.0",
     "nonenumerable": "^1.0.1",
     "notepack.io": "^2.2.0",
-    "internal-ip": "^4.3.0",
     "ws": "^7.1.0"
   },
   "devDependencies": {
@@ -55,6 +55,7 @@
     "@types/mongoose": "^5.5.12",
     "@types/node": "^10.0.8",
     "@types/sinon": "^4.3.3",
+    "@types/internal-ip": "^4.1.0",
     "all-contributors-cli": "^5.4.0",
     "benchmark": "^2.1.1",
     "cors": "^2.8.5",

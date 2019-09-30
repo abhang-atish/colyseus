@@ -25,15 +25,15 @@ export interface RoomWithScore {
 // remote room call timeouts
 export const REMOTE_ROOM_SHORT_TIMEOUT = Number(process.env.COLYSEUS_PRESENCE_SHORT_TIMEOUT || 2000);
 
-type RemoteRoomResponse<T= any> = [string?, T?];
+type RemoteRoomResponse<T = any> = [string?, T?];
 
 export class MatchMaker {
-  public handlers: {[id: string]: RegisteredHandler} = {};
+  public handlers: { [id: string]: RegisteredHandler } = {};
   public exposedMethods = ['joinOrCreate', 'create', 'join', 'joinById'];
   public allowedRoomNameChars = /([a-zA-Z_\-0-9]+)/gi;
 
   private processId: string;
-  private localRooms: {[roomId: string]: Room} = {};
+  private localRooms: { [roomId: string]: Room } = {};
 
   private presence: Presence;
   private driver: MatchMakerDriver;
@@ -145,7 +145,7 @@ export class MatchMaker {
     });
   }
 
-  public async remoteRoomCall<R= any>(
+  public async remoteRoomCall<R = any>(
     roomId: string,
     method: string,
     args?: any[],
@@ -181,7 +181,7 @@ export class MatchMaker {
         unsubscribeTimeout = setTimeout(() => {
           unsubscribe();
 
-          const request = `${method}${ args && ' with args ' + JSON.stringify(args) || '' }`;
+          const request = `${method}${args && ' with args ' + JSON.stringify(args) || ''}`;
           reject(new Error(`remote room (${roomId}) timed out, requesting "${request}". ` +
             `Timeout setting: ${rejectionTimeout}ms`));
         }, rejectionTimeout);
@@ -208,11 +208,11 @@ export class MatchMaker {
   }
 
   public hasHandler(name: string) {
-    return this.handlers[ name ] !== undefined;
+    return this.handlers[name] !== undefined;
   }
 
   public async createRoom(roomName: string, clientOptions: ClientOptions): Promise<RoomListingData> {
-    const registeredHandler = this.handlers[ roomName ];
+    const registeredHandler = this.handlers[roomName];
     const room = new registeredHandler.klass();
 
     // set room public attributes
@@ -242,7 +242,8 @@ export class MatchMaker {
     room.listing.maxClients = room.maxClients;
 
     // imediatelly ask client to join the room
-    debugMatchMaking('spawning \'%s\', roomId: %s, processId: %s', roomName, room.roomId, this.processId);
+    // tslint:disable-next-line: max-line-length
+    debugMatchMaking(new Date().toLocaleTimeString() + ': spawning \'%s\', roomId: %s, processId: %s', roomName, room.roomId, this.processId);
 
     room.on('lock', this.lockRoom.bind(this, roomName, room));
     room.on('unlock', this.unlockRoom.bind(this, roomName, room));
@@ -279,7 +280,7 @@ export class MatchMaker {
       }
 
       const room = this.localRooms[roomId];
-      promises.push( room.disconnect() );
+      promises.push(room.disconnect());
     }
 
     return Promise.all(promises);
@@ -288,8 +289,7 @@ export class MatchMaker {
   protected async reserveSeatFor(room: RoomListingData, options) {
     const sessionId: string = generateId();
 
-    debugMatchMaking(
-      'reserving seat. sessionId: \'%s\', roomId: \'%s\', processId: \'%s\'',
+    debugMatchMaking(new Date().toLocaleTimeString() + ' :reserving seat. sessionId: \'%s\', roomId: \'%s\', processId: \'%s\'',
       sessionId, room.roomId, this.processId,
     );
 
@@ -317,7 +317,7 @@ export class MatchMaker {
         await this.remoteRoomCall(room.roomId, 'roomId');
 
       } catch (e) {
-        debugMatchMaking(`cleaning up stale room '${roomName}', roomId: ${room.roomId}`);
+        debugMatchMaking(new Date().toLocaleTimeString() + ` : cleaning up stale room '${roomName}', roomId: ${room.roomId}`);
         room.remove();
 
         this.clearRoomReferences({ roomId: room.roomId, roomName } as Room);
@@ -387,8 +387,7 @@ export class MatchMaker {
       const concurrencyTimeout = Math.min(concurrency * 100, REMOTE_ROOM_SHORT_TIMEOUT);
 
       if (concurrency > 0) {
-        debugMatchMaking(
-          'receiving %d concurrent requests for joining \'%s\' (waiting %d ms)',
+        debugMatchMaking(new Date().toLocaleTimeString() + ' : receiving %d concurrent requests for joining \'%s\' (waiting %d ms)',
           concurrency, roomToJoin, concurrencyTimeout,
         );
       }
@@ -440,7 +439,8 @@ export class MatchMaker {
   }
 
   private disposeRoom(roomName: string, room: Room): void {
-    debugMatchMaking('disposing \'%s\' (%s) on processId \'%s\'', roomName, room.roomId, this.processId);
+    // tslint:disable-next-line: max-line-length
+    debugMatchMaking(new Date().toLocaleTimeString() + ' : disposing \'%s\' (%s) on processId \'%s\'', roomName, room.roomId, this.processId);
 
     // remove from room listing
     room.listing.remove();
