@@ -289,7 +289,7 @@ export class MatchMaker {
   protected async reserveSeatFor(room: RoomListingData, options) {
     const sessionId: string = generateId();
 
-    debugMatchMaking(new Date().toLocaleTimeString() + ' :reserving seat. sessionId: \'%s\', roomId: \'%s\', processId: \'%s\'',
+    debugMatchMaking('Reserving seat. sessionId: \'%s\', roomId: \'%s\', processId: \'%s\'',
       sessionId, room.roomId, this.processId,
     );
 

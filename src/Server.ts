@@ -108,14 +108,13 @@ export class Server {
     this.onShutdownCallback = callback;
   }
 
-  protected onShutdownCallback: () => void | Promise<any> =
-    () => Promise.resolve()
+  protected onShutdownCallback: () => void | Promise<any> = () => Promise.resolve();
 
   protected attachMatchMakingRoutes(server: http.Server) {
     const listeners = server.listeners('request').slice(0);
     server.removeAllListeners('request');
 
-    server.on('request', (req, res) => {
+    server.on('request', (req: http.IncomingMessage, res) => {
       if (req.url.indexOf('/matchmake') !== -1) {
         debugMatchMaking(new Date().toLocaleTimeString() + ': received matchmake request: %s', req.url);
         this.handleMatchMakeRequest(req, res);
@@ -142,6 +141,7 @@ export class Server {
       res.end();
 
     } else if (req.method === 'POST') {
+      console.log(req.url);
       const matchedParams = req.url.match(this.matchMaker.allowedRoomNameChars);
       const method = matchedParams[matchedParams.length - 2];
       const name = matchedParams[matchedParams.length - 1];
@@ -187,5 +187,4 @@ export class Server {
     }
 
   }
-
 }
