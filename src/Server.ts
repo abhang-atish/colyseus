@@ -116,7 +116,7 @@ export class Server {
 
     server.on('request', (req: http.IncomingMessage, res) => {
       if (req.url.indexOf('/matchmake') !== -1) {
-        debugMatchMaking(new Date().toLocaleTimeString() + ': received matchmake request: %s', req.url);
+        debugMatchMaking('received matchmake request: %s', req.url);
         this.handleMatchMakeRequest(req, res);
 
       } else {
