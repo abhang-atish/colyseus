@@ -102,7 +102,6 @@ export class WebSocketTransport extends Transport {
   }
 
   private async handelMatchmake2(client: Client, method, name, body) {
-    console.log(body);
     try {
       if (this.matchMaker.exposedMethods.indexOf(method) === -1) {
         throw new MatchMakeError(`Invalid method "${method}"`, Protocol.ERR_MATCHMAKE_UNHANDLED);
